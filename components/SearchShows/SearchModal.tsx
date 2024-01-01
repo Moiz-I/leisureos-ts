@@ -1,0 +1,120 @@
+"use client";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { SearchResults } from "./SearchResults";
+import { showProps } from "@/app/types/showResultProps";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { instrument_serif } from "@/app/fonts";
+import { cn } from "@/app/lib/utils";
+
+interface oldShowProps {
+  id: number;
+  name: string;
+  image: {
+    medium: string;
+    original: string;
+  };
+  summary: string;
+}
+interface returnedShowsProps {
+  show: oldShowProps;
+}
+
+export const SearchModal = () => {
+  const [query, setQuery] = useState<string>("");
+  const [returnedShows, setReturnedShows] = useState<showProps[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `https://api.tvmaze.com/search/shows?q=${query}`
+        );
+
+        if (isMounted) {
+          const returned = res.data.map(
+            (showArr: returnedShowsProps): showProps => {
+              const show = showArr.show;
+              const image =
+                show.image && show.image.medium
+                  ? show.image.medium
+                  : "fallback";
+              return {
+                idx: show.id, // Rename 'id' to 'idx'
+                name: show.name,
+                image: image, // Use the medium image URL or "fallback"
+              };
+            }
+          );
+          // console.log(res.data);
+          const summaries = res.data.map(
+            (showArr: returnedShowsProps): string => {
+              const show = showArr.show;
+              const summary = show.summary;
+              return summary;
+            }
+          );
+          console.log(summaries);
+
+          setReturnedShows(returned);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+
+    // Cleanup function to handle unmounting
+    return () => {
+      isMounted = false;
+    };
+  }, [query]);
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="p-0 aspect-square">
+          <Plus width={20} />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle
+            className={cn("text-3xl flex gap-1", instrument_serif.className)}
+          >
+            Search<div className="italic">for a</div> show
+          </DialogTitle>
+          {/* <DialogDescription>And it will appear</DialogDescription> */}
+          <Input
+            onChange={(event) => setQuery(event.target.value)}
+            value={query}
+            className={cn(
+              "text-lg text-neutral-600",
+              instrument_serif.className
+            )}
+            placeholder={
+              ["Rick and Morty", "One Piece", "The Office"][
+                Math.floor(Math.random() * 3)
+              ]
+            }
+          />
+        </DialogHeader>
+        <SearchResults shows={returnedShows} />
+      </DialogContent>
+    </Dialog>
+  );
+};

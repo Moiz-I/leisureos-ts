@@ -1,8 +1,13 @@
-type showProps = {
-  id: number;
+import { Id } from "@/convex/_generated/dataModel";
+
+export type showProps = {
+  idx: number;
   name: string;
-  image: {
-    medium: string;
-    original: string;
-  };
+  image: string;
+};
+
+export type showCardProps = {
+  show: showProps;
+  link: string;
+  id: Id<"showLibrary">;
 };

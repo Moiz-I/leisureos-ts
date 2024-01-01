@@ -94,10 +94,10 @@ export async function getShowLinks(props: getShowLinksProps) {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Success:", data);
+      // console.log("Success:", data);
       const rawShows = data.data.popularTitles.edges;
       const offerArr = rawShows[0].node.offers;
-      console.log("offerArr ", offerArr);
+      // console.log("offerArr ", offerArr);
       // for (const offer of offerArr) {
       //   console.log("offer ", offer);
       //   return offer.standardWebURL;
