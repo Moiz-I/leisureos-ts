@@ -22,7 +22,11 @@ export const SearchLibrary = ({ query, setQuery }: SearchLibraryProps) => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      <SearchModal />
+      <SearchModal>
+        <Button className="p-0 aspect-square">
+          <Plus width={20} />
+        </Button>
+      </SearchModal>
     </div>
   );
 };

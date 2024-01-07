@@ -7,6 +7,7 @@ export default defineSchema({
     name: v.string(),
     image: v.string(),
     link: v.string(),
+    tags: v.array(v.string()),
     userId: v.string(),
   }).index("by_user", ["userId"]),
 });

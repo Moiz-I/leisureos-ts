@@ -32,6 +32,7 @@ export const create = mutation({
     name: v.string(),
     image: v.string(),
     link: v.string(),
+    tags: v.array(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -106,6 +107,7 @@ export const update = mutation({
     name: v.optional(v.string()),
     image: v.optional(v.string()),
     link: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();

@@ -10,4 +10,5 @@ export type showCardProps = {
   show: showProps;
   link: string;
   id: Id<"showLibrary">;
+  tags: string[];
 };

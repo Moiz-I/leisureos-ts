@@ -5,31 +5,40 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect, use, Dispatch, SetStateAction } from "react";
 import { showProps } from "@/app/types/showResultProps";
 import axios from "axios";
-import { ShowState, useShowStore } from "@/app/utils/useShowStore";
 import scrapeShowTitles from "@/app/scraper";
 import { useUser } from "@clerk/clerk-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import {
-  AddShowPopoverProps,
-  Offer,
-  serviceProps,
-} from "@/app/types/addShowProps";
+import { AddLinkProps, Offer, serviceProps } from "@/app/types/addShowProps";
 import { serviceMapping } from "@/app/utils/constants";
+import { useShowStore } from "@/app/utils/useShowStore";
+import { useStepStore } from "@/app/utils/useStepStore";
+import { useTagStore } from "@/app/utils/useTagStore";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-export const AddShowPopover = ({
-  show,
-  setPopoverOpen,
+export const AddLink = ({
+  // show,
+  // setPopoverOpen,
   updateShow = false,
   convexId,
-}: AddShowPopoverProps) => {
+  setModalOpen,
+}: AddLinkProps) => {
   const [services, setServices] = useState<serviceProps[]>([]);
-  const { showLibrary, addShow, removeShow } = useShowStore();
-  const { name } = show;
+  const [customLink, setCustomLink] = useState<string>("");
+  // const { name } = show;
   const { user } = useUser();
   const create = useMutation(api.showLibrary.create);
   const modify = useMutation(api.showLibrary.update);
+  const { show, setShow } = useShowStore();
+  const { name } = show;
+  const { setStep } = useStepStore();
+  const { tags } = useTagStore();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,6 +71,10 @@ export const AddShowPopover = ({
               uniqueServices.push(service);
             }
           }
+          const animeflix = `https://animeflix.live/search/?anime=${name
+            .toLowerCase()
+            .replace(" ", "-")}`.replace(/[^a-zA-Z0-9]/g, "");
+          uniqueServices.push({ serviceName: "Animeflix", link: animeflix });
           setServices(uniqueServices);
         }
       } catch (error) {
@@ -147,30 +160,41 @@ export const AddShowPopover = ({
       });
   }, []);
 
-  const addShowToLibrary = (show: showProps, service: serviceProps) => {
+  const addShowToLibrary = (show: showProps, service: string) => {
     console.log("show ", show);
     console.log("link ", service);
+    if (!(service.includes("https://") || service.includes("http://"))) {
+      service = "https://" + service;
+    }
     // addShow(show, service.link);
     if (updateShow && convexId) {
       modify({
         id: convexId,
         idx: show.idx,
         name: show.name,
-        link: service.link,
+        link: service,
+        tags: tags,
         image: show.image,
       });
     } else {
       const promise = create({
         idx: show.idx,
         name: show.name,
-        link: service.link,
+        link: service,
+        tags: tags,
         image: show.image,
       });
       promise.then((result) => {
         console.log("result ", result);
       });
     }
-    setPopoverOpen(false);
+    // setPopoverOpen(false);
+    setShow({
+      idx: 0,
+      name: "",
+      image: "",
+    });
+    updateShow ? setModalOpen(false) : setStep(0);
   };
 
   return (
@@ -178,14 +202,36 @@ export const AddShowPopover = ({
       <h1 className="flex flex-col">
         {name}
         {services.map((service, index) => (
-          <Button
-            key={index}
-            variant="link"
-            onClick={() => addShowToLibrary(show, service)}
-          >
-            <p>{service.serviceName}</p>
-          </Button>
+          <TooltipProvider key={index}>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  key={index}
+                  variant="link"
+                  onClick={() => addShowToLibrary(show, service.link)}
+                >
+                  <p>{service.serviceName}</p>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent sideOffset={5} side="top">
+                <p>{service.link}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         ))}
+        <form onSubmit={() => addShowToLibrary(show, customLink)}>
+          <label>
+            Enter your link:
+            <input
+              type="text"
+              className="border-2"
+              value={customLink}
+              onChange={(e) => {
+                setCustomLink(e.target.value);
+              }}
+            />
+          </label>
+        </form>
       </h1>
     </div>
   );

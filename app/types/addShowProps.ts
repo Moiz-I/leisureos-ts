@@ -7,11 +7,12 @@ export interface serviceProps {
   link: string;
 }
 
-export interface AddShowPopoverProps {
-  show: showProps;
-  setPopoverOpen: Dispatch<SetStateAction<boolean>>;
+export interface AddLinkProps {
+  // show: showProps;
+  // setPopoverOpen: Dispatch<SetStateAction<boolean>>;
   updateShow?: boolean;
   convexId?: Id<"showLibrary">;
+  setModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 interface Package {
