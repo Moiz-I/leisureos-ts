@@ -99,13 +99,20 @@ export const AddLink = ({
 
     const fetchStremioId = async () => {
       try {
-        const res = await axios.get(
-          `https://www.omdbapi.com/?type=series&t=${name}&apikey=d41d2e9e`
-        );
-        console.log("res ", res.data.imdbID);
+        const apiUrl =
+          process.env.NODE_ENV === "development"
+            ? "http://localhost:3000/api/omdb"
+            : "https://leisureos-ts.vercel.app/api/omdb";
 
-        if (isMounted && res.data.imdbID) {
-          const stremioLink = `stremio://detail/series/${res.data.imdbID}/?autoPlay={true}`;
+        const response = await fetch(`${apiUrl}?showName=${name}`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        console.log("res ", data.imdbID);
+
+        if (isMounted && data.imdbID) {
+          const stremioLink = `stremio://detail/series/${data.imdbID}/?autoPlay={true}`;
           setServices((prevServices) => [
             ...prevServices,
             { serviceName: "Stremio", link: stremioLink },
