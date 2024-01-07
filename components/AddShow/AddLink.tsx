@@ -130,10 +130,12 @@ export const AddLink = ({
 
     // fetchAniwaveLink();
     async function callAniwaveApi(showName: string) {
-      const response = await fetch(
-        `http://localhost:3000/api/aniwave?showName=${showName}`
-      );
+      const apiUrl =
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:3000/api/aniwave"
+          : "https://leisureos-ts.vercel.app/api/aniwave"; // Replace with your production URL
 
+      const response = await fetch(`${apiUrl}?showName=${showName}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
