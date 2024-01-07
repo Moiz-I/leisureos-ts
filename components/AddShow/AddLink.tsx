@@ -158,6 +158,7 @@ export const AddLink = ({
       }
 
       const data = await response.json();
+      console.log("aniwave data ", data);
       return data;
     }
 

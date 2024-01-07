@@ -27,6 +27,7 @@ async function scrapeShowTitles(showName: string): Promise<ShowInfo[]> {
 
     // Find all elements with the class 'd-title' and map them to an array of ShowInfo objects.
     const shows: ShowInfo[] = [];
+    shows.push({ title: "test", link: body });
     $(".d-title").each((index, element) => {
       const title = $(element).text().trim();
       const link = $(element).attr("href")?.trim();
