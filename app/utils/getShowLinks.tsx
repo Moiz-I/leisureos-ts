@@ -1,5 +1,3 @@
-"use client";
-
 interface getShowLinksProps {
   showQuery: string;
   region: string;

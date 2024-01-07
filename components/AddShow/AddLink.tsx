@@ -43,7 +43,16 @@ export const AddLink = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getShowLinks({ showQuery: name, region: "en_GB" });
+        // const data = await getShowLinks({ showQuery: name, region: "en_GB" });
+        const apiUrl =
+          process.env.NODE_ENV === "development"
+            ? "http://localhost:3000/api/justwatch"
+            : "https://leisureos-ts.vercel.app/api/justwatch";
+        const response = await fetch(`${apiUrl}?showName=${name}`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
         // console.log("data ", data);
         if (data !== undefined) {
           const newServices = data.map((offer: Offer) => ({
@@ -135,6 +144,7 @@ export const AddLink = ({
           ? "http://localhost:3000/api/aniwave"
           : "https://leisureos-ts.vercel.app/api/aniwave"; // Replace with your production URL
 
+      console.log("apiUrl ", apiUrl);
       const response = await fetch(`${apiUrl}?showName=${showName}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
