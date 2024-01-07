@@ -15,7 +15,12 @@ async function scrapeShowTitles(showName: string): Promise<ShowInfo[]> {
   try {
     // Fetch the HTML content from the URL.
     const response = await fetch(url, {
+      method: "GET",
+      cache: "no-cache",
+      mode: "cors",
       headers: {
+        "content-type": "text/html",
+        "Access-Control-Allow-Origin": "*",
         "User-Agent":
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         Accept:
