@@ -82,7 +82,8 @@ export const AddLink = ({
           }
           const animeflix = `https://animeflix.live/search/?anime=${name
             .toLowerCase()
-            .replace(" ", "-")}`.replace(/[^a-zA-Z0-9]/g, "");
+            .replace(" ", "-")
+            .replace(/[^a-zA-Z0-9]/g, "")}`;
           uniqueServices.push({ serviceName: "Animeflix", link: animeflix });
           setServices(uniqueServices);
         }
@@ -239,6 +240,13 @@ export const AddLink = ({
             </Tooltip>
           </TooltipProvider>
         ))}
+        {!services.some((service) => service.serviceName === "Aniwave") && (
+          <Button variant="link" className="font-mono">
+            <a href="https://aniwave.to/filter?keyword=naruto">
+              Aniwave select link
+            </a>
+          </Button>
+        )}
         <form onSubmit={() => addShowToLibrary(show, customLink)}>
           <label>
             Enter your link:
