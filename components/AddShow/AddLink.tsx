@@ -242,7 +242,7 @@ export const AddLink = ({
         ))}
         {!services.some((service) => service.serviceName === "Aniwave") && (
           <Button variant="link" className="font-mono">
-            <a href="https://aniwave.to/filter?keyword=naruto">
+            <a href={`https://aniwave.to/filter?keyword=${name}`}>
               Aniwave select link
             </a>
           </Button>
