@@ -80,7 +80,7 @@ export const AddLink = ({
               uniqueServices.push(service);
             }
           }
-          const animeflix = `https://animeflix.live/search/?anime=${name
+          const animeflix = `https://animeflix.gg/search/?anime=${name
             .toLowerCase()
             .replace(" ", "-")
             .replace(/[^a-zA-Z0-9]/g, "")}`;
@@ -184,7 +184,10 @@ export const AddLink = ({
   const addShowToLibrary = (show: showProps, service: string) => {
     console.log("show ", show);
     console.log("link ", service);
-    if (!(service.includes("https://") || service.includes("http://"))) {
+    if (
+      !(service.includes("https://") || service.includes("http://")) &&
+      !service.includes("stremio")
+    ) {
       service = "https://" + service;
     }
     // addShow(show, service.link);
