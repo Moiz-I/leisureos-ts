@@ -30,11 +30,11 @@ export const AddTags: React.FC<AddTagsProps> = ({
 
   const handleToggleChange = (value: string[]) => {
     setTags(value);
-    console.log(tags);
+    // console.log(tags);
   };
 
   const isToggleActive = (value: string) => {
-    console.log(value, tags.includes(value));
+    // console.log(value, tags.includes(value));
     return tags.includes(value);
   };
 

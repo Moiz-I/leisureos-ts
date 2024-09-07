@@ -130,7 +130,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       id: convexId,
       tags: aliasTags,
     });
-    console.log("tags ", tags);
+    // console.log("tags ", tags);
   };
 
   return (
